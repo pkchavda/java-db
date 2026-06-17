@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class DatabaseConnection {
 
-    static PreparedStatement connectToDatabase() {
+    static Statement connectToDatabase() {
         String url = "jdbc:mysql://localhost:3306/mydb";
         String username = "root";
         String password = "";
@@ -14,9 +14,9 @@ public class DatabaseConnection {
         try {
             Connection con = DriverManager.getConnection(url, username, password);
             System.out.println("Connection Successful!");
-            PreparedStatement pstmt = con.prepareStatement();
+            Statement stmt = con.createStatement();
 
-            return pstmt;
+            return stmt;
 
         } catch (SQLException e) {
             System.out.println("Connection Failed!");
@@ -49,9 +49,9 @@ public class DatabaseConnection {
 
     public static void main(String[] args) throws SQLException {
 
-        PreparedStatement pstmt = connectToDatabase();
-        if (pstmt == null) {
-            System.out.println("PreparedStatement is null. Cannot insert data.");
+        Statement stmt = connectToDatabase();
+        if (stmt == null) {
+            System.out.println("Statement is null. Cannot insert data.");
             return;
         }
 
@@ -61,11 +61,7 @@ public class DatabaseConnection {
         String sql = "insert into student (name, age, number) values (data.name, data.age, data.phonenumber)";
         System.out.println(sql);
 
-        pstmt.setString(1, data.name);
-        pstmt.setInt(2, data.age);
-        pstmt.setLong(3, data.phonenumber);
-
-        pstmt.executeUpdate();
+        stmt.executeUpdate(sql);
         System.out.println("Data inserted successfully!😊");
     }
 
