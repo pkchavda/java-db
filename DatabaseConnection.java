@@ -10,7 +10,7 @@ public class DatabaseConnection {
     static Connection connectToDatabase() {
         String url = "jdbc:mysql://localhost:3306/mydb";
         String username = "root";
-        String password = "123456789";
+        String password = "";
 
         try {
             Connection con = DriverManager.getConnection(url, username, password);
@@ -68,3 +68,6 @@ public class DatabaseConnection {
         System.out.println("Data inserted successfully!😊");
     }
 }
+
+// javac -cp ".;mysql.jar" DatabaseConnection.java 
+// java -cp ".;mysql.jar" DatabaseConnection
