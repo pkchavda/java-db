@@ -36,9 +36,11 @@
 
             System.out.print("Enter your age: ");
             data.age = scanner.nextInt();
+            scanner.nextLine();
 
             System.out.print("Enter your Phone Number: ");
             data.phonenumber = scanner.nextInt();
+            scanner.nextLine();
 
             System.out.println("Name: " + data.name);
             System.out.println("Age: " + data.age);
@@ -51,19 +53,16 @@
                 System.out.println("Enter your question: ");
                 String question = scanner.nextLine();
 
-                System.out.println("Question: " + question);
-
                 return question;
         }
 
         public static void main(String[] args) throws SQLException {
-
-
             System.out.println("Welcome to the Database Connection Program! \n Please select an option: ");
             System.out.println("1. Add Student: ");
             System.out.println("2. Add Question: ");
 
             int choice = scanner.nextInt();
+            scanner.nextLine();
 
             Connection conn = connectToDatabase();
 
@@ -88,8 +87,6 @@
 
                     pstmt.executeUpdate();
                     System.out.println("Data inserted successfully!😊");
-                    
-                    scanner.close();
 
                     break;
 
@@ -103,19 +100,21 @@
                     String question = addQuestion();
                     System.out.println("Question: " + question);
 
-                    String sql1 = "insert into question_table (question) values (?)";
+                    String sql1 = "insert into questions (question) values (?)";
                     PreparedStatement pstmt1 = conn.prepareStatement(sql1);
 
                     pstmt1.setString(1, question);
                     pstmt1.executeUpdate();
 
                     System.out.println("Question inserted successfuly");
+                    break;
 
                 default:
                     System.out.println("Invalid choice! Please select either 1 or 2.");
             }
+            scanner.close();
         }
     }
 
     // javac -cp ".;mysql.jar" DatabaseConnection.java 
-    // java -cp ".;mysql.jar" DatabaseConnection
+    // java -cp ".;mysql.jar" DatabaseConnection    
