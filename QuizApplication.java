@@ -84,7 +84,7 @@ public class QuizApplication {
 
         System.out.println("\n==================================");
         System.out.println("         QUIZ STARTED");
-        System.out.println("==================================");
+        System.out.println("====================================");
 
         while (rs.next()) {
 
@@ -311,5 +311,5 @@ public class QuizApplication {
     }
 }
 
-// javac -cp ".;mysql.jar" DatabaseConnection.java
-// java -cp ".;mysql.jar" DatabaseConnection
+// javac -cp ".;mysql.jar" QuizApplication.java
+// java -cp ".;mysql.jar" QuizApplication
