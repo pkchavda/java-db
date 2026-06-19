@@ -257,6 +257,8 @@ public class QuizApplication {
                 System.out.println("| Student name : " + rs.getString("name"));
                 System.out.println("| Student Enrllment No. :" + rs.getInt("enrollment_number"));
                 System.out.println("| Score : " + rs.getInt("score"));
+                System.out.println("| Wrong Question : " + rs.getInt("wrong_question"));
+                System.out.println("| Right Questions : " + rs.getInt("right_questions"));
                 System.out.println("| Total Questions : " + rs.getInt("total_questions"));
                 System.out.println("| Percentage : " + rs.getInt("percentage") + "%");
                 System.out.println("| Date : " + rs.getTimestamp("quiz_date"));
@@ -313,7 +315,7 @@ public class QuizApplication {
         System.out.println("4. View all Questions:");
         System.out.println("5. View all Students: ");
         System.out.println("6. Delete Student: ");
-        System.out.println("7. Student Score History: ");
+        System.out.println("7. Search Student: ");
         System.out.println("8. View Top 10 Students");
         System.out.println("0. Exit");
 
