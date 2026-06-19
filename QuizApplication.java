@@ -67,6 +67,12 @@ public class QuizApplication {
         int totalQuestions = 0;
         int score = 0;
 
+        System.out.println("Enter Your Name: ");
+        String NameQuiz = scanner.nextLine();
+
+        System.out.println("Enter Your Enrollment Number: ");
+        int EnrollQuiz = scanner.nextInt();
+
         System.out.print("How many questions do you want to attempt? : ");
         int limit = scanner.nextInt();
         scanner.nextLine();
@@ -75,7 +81,7 @@ public class QuizApplication {
         List<String> wrongQuestionList = new ArrayList<>();
         List<String> userAnswerList = new ArrayList<>();
 
-        String sql = "SELECT * FROM questions LIMIT ?";
+        String sql = "SELECT * FROM questions ORDER BY RAND() LIMIT ?";
 
         PreparedStatement pstmt3 = conn.prepareStatement(sql);
         pstmt3.setInt(1, limit);
@@ -96,6 +102,8 @@ public class QuizApplication {
             String opC = rs.getString("option_c");
             String opD = rs.getString("option_d");
             String dbCorrect = rs.getString("correct_option");
+
+            
 
             System.out.println("\nQuestion " + totalQuestions + ": " + qText);
             System.out.println("A) " + opA);
@@ -144,6 +152,22 @@ public class QuizApplication {
             System.out.println("");
         }
 
+            String sqlResult =
+            "INSERT INTO student_result(name, enrollment_number, score, wrong_question, right_questions, total_questions, percentage) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+            PreparedStatement pstmt7 =
+            conn.prepareStatement(sqlResult);
+
+            pstmt7.setString(1, NameQuiz);
+            pstmt7.setInt(2, EnrollQuiz);
+            pstmt7.setInt(3, score);
+            pstmt7.setInt(4, newScore);
+            pstmt7.setInt(5, score);
+            pstmt7.setInt(6, totalQuestions);
+            pstmt7.setInt(7, percentage);
+
+            pstmt7.executeUpdate();
+
     }
 
 
@@ -178,14 +202,14 @@ public class QuizApplication {
 
         while (rs3.next()) {
             
-            System.out.println("┌─────────────────────────────────────────────────────────┐");
+            System.out.println("┌───────────────────────────────────────────────────────────────────────────────┐");
             System.out.println("| Question : " + rs3.getString("question"));
             System.out.println("| Option A : " + rs3.getString("option_a"));
             System.out.println("| option B : " + rs3.getString("option_b"));
             System.out.println("| option C : " + rs3.getString("option_c"));
             System.out.println("| Option D : " + rs3.getString("option_d"));
             System.out.println("| Correct Option : " + rs3.getString("correct_option"));
-            System.out.println("└───────────────────────────────────────────────────────────┘");
+            System.out.println("└─────────────────────────────────────────────────────────────────────────────────┘");
 
         }
 
@@ -211,6 +235,68 @@ public class QuizApplication {
             }
         }
 
+    static void viewStudentResult(Connection conn) throws SQLException {
+
+            System.out.print("Enter Enrollment Number: ");
+            int enrollmentNo = scanner.nextInt();
+            scanner.nextLine();
+
+            String sql = "SELECT * FROM student_result WHERE enrollment_number = ?";
+
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, enrollmentNo);
+            ResultSet rs = pstmt.executeQuery();
+
+            boolean found = false;
+
+            while(rs.next()) {
+
+                found = true;
+
+                System.out.println("┌─────────────────────────────────────────────────────────┐");
+                System.out.println("| Student name : " + rs.getString("name"));
+                System.out.println("| Student Enrllment No. :" + rs.getInt("enrollment_number"));
+                System.out.println("| Score : " + rs.getInt("score"));
+                System.out.println("| Total Questions : " + rs.getInt("total_questions"));
+                System.out.println("| Percentage : " + rs.getInt("percentage") + "%");
+                System.out.println("| Date : " + rs.getTimestamp("quiz_date"));
+                System.out.println("└──────────────────────────────────────────────────────────┘");
+            }
+
+            if(!found) {
+                System.out.println("No Result Found!");
+            }
+        }
+
+    static void viewTopStudent(Connection conn) throws SQLException{
+
+        String rank = "SELECT * FROM student_result ORDER BY percentage DESC LIMIT 5";
+        PreparedStatement pstmt9 = conn.prepareStatement(rank);
+        ResultSet rs9 = pstmt9.executeQuery();
+
+        boolean found1 = false;
+        int RankCount = 0;
+
+            System.out.println("||=====================================================================||");
+            System.out.println("||                         ALL TOP 10 STUDENTS                         ||");
+            System.out.println("||=====================================================================||");
+            System.out.println("\n");
+            System.out.println("Rank\t" + "Name\t" + "Percentage");
+
+                    while (rs9.next()) {
+                        RankCount++;
+
+                        System.out.println("┌─────────────────────────────────────────────────────────────────────────────────────────────────────┐");
+                        System.out.println("|" + RankCount + "\t" + rs9.getString("name") + "\t" + rs9.getInt("percentage") + "%");
+                        System.out.println("└─────────────────────────────────────────────────────────────────────────────────────────────────────┘");
+                    }
+
+        if(!found1) {
+                System.out.println("No Result Found!");
+            }
+        
+    }
+
     public static void main(String[] args) throws SQLException {
 
         Connection connection = new DatabaseConnection().connection;
@@ -227,6 +313,8 @@ public class QuizApplication {
         System.out.println("4. View all Questions:");
         System.out.println("5. View all Students: ");
         System.out.println("6. Delete Student: ");
+        System.out.println("7. Student Score History: ");
+        System.out.println("8. View Top 10 Students");
         System.out.println("0. Exit");
 
         System.out.println("\n");
@@ -236,6 +324,11 @@ public class QuizApplication {
         System.out.println("\n");
 
         switch (choice) {
+
+            case 0: 
+
+            return;
+
             case 1:
                 System.out.println("\n");
                 Data data = addStudentinput();
@@ -296,12 +389,20 @@ public class QuizApplication {
                 System.out.println("\n");
 
                 viewAllStudents(connection);
-
                 break;
 
             case 6:
 
                 deleteStudent(connection);
+                break;
+            
+            case  7:
+
+                viewStudentResult(connection);
+                break;
+
+            case 8:
+                viewTopStudent(connection);
                 break;
 
             default:
